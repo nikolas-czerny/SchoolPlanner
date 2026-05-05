@@ -19,7 +19,11 @@ public class detailSubject extends Window {
 //    private DefaultTableModel model;
     public String infoText = "";
     private JLabel info;
+    private DefaultTableModel gradesTable;
+    private DefaultTableModel tasksTable;
 
+    private JScrollPane scrollOne;
+    private JScrollPane scrollTwo;
 
     public detailSubject(User user, Subject subject) {
         super("School Planner - Detail Subject", user);
@@ -89,24 +93,9 @@ public class detailSubject extends Window {
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
         tablePanel.add(tableLabel);
 
-        String[] header = {"Name", "Priority", "Date"};
-        ArrayList<Task> tasksArray = user.getTasksForSubject(subject);
-        Object[][] tasks = new Object[tasksArray.size()][header.length];
+        scrollOne = refreshGradeTable(scrollOne, tasksTable, GetDataTask(), GetHeaderTask());
 
-        int i = 0;
-        for (Task task : tasksArray) {
-            String taskName = task.getName();
-            int taskPriority = task.getPriority();
-            String taskDate = task.getUIDate();
-
-            Object[] row = {taskName, taskPriority, taskDate};
-            tasks[i] = row;
-            i++;
-        }
-
-        JScrollPane sc = makeTable(header, tasks);
-
-        tablePanel.add(sc);
+        tablePanel.add(scrollOne);
 
         return tablePanel;
     }
@@ -118,21 +107,9 @@ public class detailSubject extends Window {
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
         gradesPanel.add(tableLabel);
 
-        String[] header = {"Grade", "Task", "Date"};
-        Object[][] grades = new Object[subject.getGrades().size()][header.length];
-        int i = 0;
-        for (Grade grade : subject.getGrades()) {
-            int gradeValue = grade.getValue();
-            String task = grade.getTask().getName();
-            String date = grade.getTask().getUIDate();
-            Object[] row = {gradeValue, task, date};
-            grades[i] = row;
-            i++;
-        }
+        scrollTwo = refreshGradeTable(scrollOne, gradesTable, GetDataGrade(), GetHeaderGrade());
 
-        JScrollPane sc = makeTable(header, grades);
-
-        gradesPanel.add(sc);
+        gradesPanel.add(scrollTwo);
 
         return gradesPanel;
     }
@@ -160,6 +137,8 @@ public class detailSubject extends Window {
 
                     Grade g = new Grade(gradeInt, subject, null);
                     subject.addGrade(g);
+
+                    scrollTwo = refreshGradeTable(scrollOne, gradesTable, GetDataGrade(), GetHeaderGrade());
                 }
             } catch (NumberFormatException ex) {
                 infoText = "Enter number";
@@ -193,12 +172,101 @@ public class detailSubject extends Window {
         }
     }
 
-    public void refreshGradeTable(JScrollPane sc) {
+    public Object[][] GetDataGrade() {
+        Object[][] grades = new Object[subject.getGrades().size()][GetHeaderGrade().length];
+        int i = 0;
+        for (Grade grade : subject.getGrades()) {
+            int gradeValue = grade.getValue();
+            String task = "";
+            String date = "";
+            if (grade.getTask() == null) {
+                task = "-";
+                date = "-";
+            } else {
+                task = grade.getTask().getName();
+                date = grade.getTask().getUIDate();
+            }
 
+            if (grade.getTask() == null) {
+                task = "-";
+            } else {
+                task = grade.getTask().getName();
+            }
+            Object[] row = {gradeValue, task, date};
+            grades[i] = row;
+            i++;
+        }
+        return grades;
+    }
+
+    public String[] GetHeaderGrade() {
+        String[] header = {"Grade", "Task", "Date"};
+        return header;
+    }
+
+    public Object[][] GetDataTask(){
+        ArrayList<Task> tasksArray = user.getTasksForSubject(subject);
+        Object[][] tasks = new Object[tasksArray.size()][GetHeaderTask().length];
+
+        int i = 0;
+        for (Task task : tasksArray) {
+            String taskName = task.getName();
+            int taskPriority = task.getPriority();
+            String taskDate = task.getUIDate();
+
+            Object[] row = {taskName, taskPriority, taskDate};
+            tasks[i] = row;
+            i++;
+        }
+
+        return tasks;
+    }
+
+    public String[] GetHeaderTask(){
+        String[] header = {"Name", "Priority", "Date"};
+        return header;
+    }
+
+    public JScrollPane refreshGradeTable(JScrollPane sc, DefaultTableModel defaultTableModel, Object[][] data, String[] header) {
+        if (defaultTableModel == null) {
+            defaultTableModel = new DefaultTableModel(data, header) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            JTable table = new JTable(defaultTableModel);
+
+            sc = new JScrollPane(table);
+
+            return sc;
+        } else {
+            defaultTableModel.setRowCount(0);
+
+            for (Object[] row : data) {
+                defaultTableModel.addRow(row);
+            }
+
+            return sc;
+        }
     }
 
     public JPanel createButtonsPanel(){
         JPanel buttonsPanel = new JPanel(new GridLayout(3, 1));
+
+        JButton button1 = new JButton("Review");
+        JButton button2 = new JButton("Remove grade");
+        JButton button3 = new JButton("Set as done");
+
+        button1.addActionListener(e -> {
+            this.setVisible(false);
+            Review review = new Review(user);
+        });
+
+        buttonsPanel.add(button1);
+        buttonsPanel.add(button2);
+        buttonsPanel.add(button3);
 
         return buttonsPanel;
     }

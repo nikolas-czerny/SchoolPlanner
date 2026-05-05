@@ -16,6 +16,5 @@ public class Main {
         Window test = new Review(user);
 
         test.setVisible(true);
-
     }
 }
