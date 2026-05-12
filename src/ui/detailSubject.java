@@ -93,7 +93,7 @@ public class detailSubject extends Window {
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
         tablePanel.add(tableLabel);
 
-        scrollOne = refreshGradeTable(scrollOne, tasksTable, GetDataTask(), GetHeaderTask());
+        refreshTasksTable();
 
         tablePanel.add(scrollOne);
 
@@ -107,7 +107,7 @@ public class detailSubject extends Window {
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
         gradesPanel.add(tableLabel);
 
-        scrollTwo = refreshGradeTable(scrollOne, gradesTable, GetDataGrade(), GetHeaderGrade());
+        refreshGradesTable();
 
         gradesPanel.add(scrollTwo);
 
@@ -138,7 +138,7 @@ public class detailSubject extends Window {
                     Grade g = new Grade(gradeInt, subject, null);
                     subject.addGrade(g);
 
-                    scrollTwo = refreshGradeTable(scrollOne, gradesTable, GetDataGrade(), GetHeaderGrade());
+                    refreshGradesTable();
                 }
             } catch (NumberFormatException ex) {
                 infoText = "Enter number";
@@ -227,28 +227,45 @@ public class detailSubject extends Window {
         return header;
     }
 
-    public JScrollPane refreshGradeTable(JScrollPane sc, DefaultTableModel defaultTableModel, Object[][] data, String[] header) {
-        if (defaultTableModel == null) {
-            defaultTableModel = new DefaultTableModel(data, header) {
+    public void refreshTasksTable(){
+        if (scrollOne != null) {
+            tasksTable.setRowCount(0);
+
+            for (Object[] row: GetDataTask()) {
+                tasksTable.addRow(row);
+            }
+        } else {
+            tasksTable = new DefaultTableModel(GetDataTask(), GetHeaderTask()) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false;
                 }
             };
 
-            JTable table = new JTable(defaultTableModel);
+            JTable table = new JTable(tasksTable);
 
-            sc = new JScrollPane(table);
+            scrollOne = new JScrollPane(table);
+        }
+    }
 
-            return sc;
-        } else {
-            defaultTableModel.setRowCount(0);
+    public void refreshGradesTable(){
+        if (scrollTwo != null) {
+            gradesTable.setRowCount(0);
 
-            for (Object[] row : data) {
-                defaultTableModel.addRow(row);
+            for (Object[] row : GetDataGrade()) {
+                gradesTable.addRow(row);
             }
+        } else {
+            gradesTable = new DefaultTableModel(GetDataGrade(), GetHeaderGrade()) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
 
-            return sc;
+            JTable table = new JTable(gradesTable);
+
+            scrollTwo = new JScrollPane(table);
         }
     }
 
@@ -263,6 +280,10 @@ public class detailSubject extends Window {
             this.setVisible(false);
             Review review = new Review(user);
         });
+
+        button2.addActionListener(e->{}); // TODO - dodelat button 2 (odstraneni znamky)
+
+        button3.addActionListener(e->{}); // TODO - dodelat button 3 (set tasku as done)
 
         buttonsPanel.add(button1);
         buttonsPanel.add(button2);
