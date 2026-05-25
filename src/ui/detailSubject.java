@@ -22,6 +22,9 @@ public class detailSubject extends Window {
     private DefaultTableModel gradesTable;
     private DefaultTableModel tasksTable;
 
+    private JTable grade_table;
+    private Object[][] grades;
+
     private JScrollPane scrollOne;
     private JScrollPane scrollTwo;
 
@@ -120,13 +123,16 @@ public class detailSubject extends Window {
         JPanel buttonsPanel = createButtonsPanel();
         bottomPanel.add(buttonsPanel);
 
-        JPanel addgradePanel = new JPanel(new GridLayout(2, 1));
+        JPanel addgradePanel = new JPanel(new GridLayout(1, 2));
+        JPanel add_grade_inputs = new JPanel(new GridLayout(2, 1));
 
         JTextField gradeInput = new JTextField(1);
+        JTextField descriptionInput = new JTextField(1);
         JButton addGradeButton = new JButton("Add Grade");
         addGradeButton.addActionListener(e -> {
             try {
                 String grade = gradeInput.getText();
+                String description = descriptionInput.getText();
                 int gradeInt = Integer.parseInt(grade);
                 if (gradeInt < 1 || gradeInt > 5) {
                     infoText = "Grade must be 1-5";
@@ -135,7 +141,7 @@ public class detailSubject extends Window {
                     infoText = "You added " + grade;
                     refreshInfoLabel(true);
 
-                    Grade g = new Grade(gradeInt, subject, null);
+                    Grade g = new Grade(gradeInt, subject, null, description);
                     subject.addGrade(g);
 
                     refreshGradesTable();
@@ -147,7 +153,10 @@ public class detailSubject extends Window {
             }
         });
 
-        addgradePanel.add(gradeInput);
+        add_grade_inputs.add(gradeInput);
+        add_grade_inputs.add(descriptionInput);
+
+        addgradePanel.add(add_grade_inputs);
         addgradePanel.add(addGradeButton);
 
         bottomPanel.add(addgradePanel);
@@ -178,17 +187,10 @@ public class detailSubject extends Window {
         for (Grade grade : subject.getGrades()) {
             int gradeValue = grade.getValue();
             String task = "";
-            String date = "";
-            if (grade.getTask() == null) {
-                task = "-";
-                date = "-";
-            } else {
-                task = grade.getTask().getName();
-                date = grade.getTask().getUIDate();
-            }
+            String date = grade.get_formated_date();
 
             if (grade.getTask() == null) {
-                task = "-";
+                task = grade.getName();
             } else {
                 task = grade.getTask().getName();
             }
@@ -200,7 +202,7 @@ public class detailSubject extends Window {
     }
 
     public String[] GetHeaderGrade() {
-        String[] header = {"Grade", "Task", "Date"};
+        String[] header = {"Grade", "Task/Name", "Date"};
         return header;
     }
 
@@ -252,7 +254,9 @@ public class detailSubject extends Window {
         if (scrollTwo != null) {
             gradesTable.setRowCount(0);
 
-            for (Object[] row : GetDataGrade()) {
+            grades = GetDataGrade();
+
+            for (Object[] row : grades) {
                 gradesTable.addRow(row);
             }
         } else {
@@ -263,9 +267,9 @@ public class detailSubject extends Window {
                 }
             };
 
-            JTable table = new JTable(gradesTable);
+            grade_table = new JTable(gradesTable);
 
-            scrollTwo = new JScrollPane(table);
+            scrollTwo = new JScrollPane(grade_table);
         }
     }
 
@@ -281,9 +285,26 @@ public class detailSubject extends Window {
             Review review = new Review(user);
         });
 
-        button2.addActionListener(e->{}); // TODO - dodelat button 2 (odstraneni znamky)
+        button2.addActionListener(e -> {
+            int selectedRow = grade_table.getSelectedRow();
 
-        button3.addActionListener(e->{}); // TODO - dodelat button 3 (set tasku as done)
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Nejdřív vyber známku v tabulce.");
+                return;
+            }
+
+            // Pokud máš tabulku se sortováním/filtrováním, musíš převést řádek:
+            int modelRow = grade_table.convertRowIndexToModel(selectedRow);
+
+            subject.getGrades().remove(modelRow);
+            refreshGradesTable();
+        });
+
+        button3.addActionListener(e->{
+            subjectAll window = new subjectAll(user);
+            this.setVisible(false);
+            window.setVisible(true);
+        });
 
         buttonsPanel.add(button1);
         buttonsPanel.add(button2);
