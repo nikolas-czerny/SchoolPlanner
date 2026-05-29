@@ -289,11 +289,10 @@ public class detailSubject extends Window {
             int selectedRow = grade_table.getSelectedRow();
 
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Nejdřív vyber známku v tabulce.");
+                JOptionPane.showMessageDialog(this, "Choose grade in table.");
                 return;
             }
 
-            // Pokud máš tabulku se sortováním/filtrováním, musíš převést řádek:
             int modelRow = grade_table.convertRowIndexToModel(selectedRow);
 
             subject.getGrades().remove(modelRow);

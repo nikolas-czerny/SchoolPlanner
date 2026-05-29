@@ -5,23 +5,16 @@ import ui.Review;
 
 import java.time.LocalDate;
 
+import ui.popUp;
+import ui.runner;
+
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-
-        LocalDate myObj = LocalDate.now(); // Create a date object
-        System.out.println(myObj); // Display the current date
-
         User user = new User();
-
-        TestData.CreateFakeTasks();
-
-        user.setTasks(TestData.tasks);
-        user.setSubjects(TestData.subjects);
-
-        Window test = new Review(user);
-
-        test.setVisible(true);
+        runner run = new runner(user);
+        run.run();
     }
 }

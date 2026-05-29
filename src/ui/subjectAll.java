@@ -50,7 +50,14 @@ public class subjectAll extends Window {
         for (int i = 0; i < user.getSubjects().size(); i++) {
             Object[] row = new Object[2];
             row[0] = user.getSubjects().get(i).getName();
-            row[1] = getAverageGrade(user.getSubjects().get(i));
+//            row[1] = getAverageGrade(user.getSubjects().get(i));
+            float g = getAverageGrade(user.getSubjects().get(i));
+
+            if (g <= 0) {
+                row[1] = "-";
+            } else {
+                row[1] = g;
+            }
             data[i] = row;
         }
 
@@ -66,12 +73,64 @@ public class subjectAll extends Window {
         return panel;
     }
 
+    public void refreshTable() {
+        model.setRowCount(0);
+        for (int i = 0; i < user.getSubjects().size(); i++) {
+            Object[] row = new Object[2];
+            row[0] = user.getSubjects().get(i).getName();
+//            row[1] = getAverageGrade(user.getSubjects().get(i));
+            float g = getAverageGrade(user.getSubjects().get(i));
+
+            if (g <= 0) {
+                row[1] = "-";
+            } else {
+                row[1] = g;
+            }
+            model.addRow(row);
+        }
+    }
+
     public JPanel buttonsPanel() {
         JPanel panel = new JPanel(new GridLayout(1, 3));
 
         JButton goToReview = new JButton("Go to review");
         JButton removeButton = new JButton("Remove");
         JButton detailSubject = new JButton("Detail");
+
+        goToReview.addActionListener(e-> {
+            this.setVisible(false);
+            Review review = new Review(user);
+            review.setVisible(true);
+        });
+
+        removeButton.addActionListener(e-> {
+            int selected_row = table.getSelectedRow();
+
+            if (selected_row == -1) {
+                JOptionPane.showMessageDialog(this, "Choose subject in table.");
+                return;
+            }
+
+            int modelRow = table.convertRowIndexToModel(selected_row);
+
+            user.getSubjects().remove(modelRow);
+            this.refreshTable();
+        });
+
+        detailSubject.addActionListener(e-> {
+            int selected_row = table.getSelectedRow();
+
+            if (selected_row == -1) {
+                JOptionPane.showMessageDialog(this, "Choose subject in table.");
+                return;
+            }
+
+            int modelRow = table.convertRowIndexToModel(selected_row);
+
+            this.setVisible(false);
+            ui.detailSubject detailSubject1 = new detailSubject(user, user.getSubjects().get(modelRow));
+            detailSubject1.setVisible(true);
+        });
 
         panel.add(goToReview);
         panel.add(removeButton);
@@ -86,13 +145,29 @@ public class subjectAll extends Window {
         JTextField nameField = new JTextField(1);
         JButton addButton = new JButton("Add");
 
+        addButton.addActionListener(e-> {
+            String name = nameField.getText();
+
+            for (Subject subject: user.getSubjects()) {
+                if (subject.getName().equals(name)) {
+                    JOptionPane.showMessageDialog(this, "Subject already exists.");
+                    return;
+                }
+            }
+
+            Subject subject = new Subject(name);
+            user.getSubjects().add(subject);
+
+            this.refreshTable();
+        });
+
         panel.add(nameField);
         panel.add(addButton);
 
         return panel;
     }
 
-    public double getAverageGrade(Subject subject) {
+    public float getAverageGrade(Subject subject) {
         if (subject.getGrades() == null) {
             return 0;
         }

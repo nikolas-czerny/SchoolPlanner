@@ -9,7 +9,7 @@ public class Task {
     private int year;
     private boolean done;
     private int priority;
-    private Subject subject;
+    private transient Subject subject;
     private Grade grade;
 
     public Task(String name, int day, int month, int year, boolean done, int priority, Subject subject) {

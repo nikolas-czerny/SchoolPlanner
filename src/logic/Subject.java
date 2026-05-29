@@ -40,4 +40,26 @@ public class Subject {
     public void setTasks(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
+    public void reconnectLinks() {
+        if (grades != null) {
+            for (Grade grade : grades) {
+                grade.setSubject(this);
+            }
+        }
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setSubject(this);
+            }
+        }
+    }
 }

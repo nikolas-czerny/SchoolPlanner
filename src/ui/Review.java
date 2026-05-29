@@ -152,7 +152,7 @@ public class Review extends Window {
         JPanel buttons = new JPanel(new GridLayout(1, 3, 10, 10));
 
         JButton addButton = new JButton("Add task");
-        JButton detailButton = new JButton("Detail task");
+        JButton allSubjects = new JButton("List subjects");
         JButton subjectButton = new JButton("Detail subject");
 
         addButton.addActionListener(e -> {
@@ -161,8 +161,31 @@ public class Review extends Window {
             addTask.setVisible(true);
         });
 
+        allSubjects.addActionListener(e -> {
+            subjectAll subjectAll = new subjectAll(user);
+            this.setVisible(false);
+            subjectAll.setVisible(true);
+        });
+
+        subjectButton.addActionListener(e -> {
+            int selected_row = table.getSelectedRow();
+
+            if (selected_row == -1) {
+                JOptionPane.showMessageDialog(this, "You must select something to continue");
+                return;
+            }
+
+            int model_row = table.convertRowIndexToModel(selected_row);
+
+            this.setVisible(false);
+            detailSubject detailSubject = new detailSubject(user, user.getSubjects().get(model_row));
+            detailSubject.setVisible(true);
+        });
+
+
+
         buttons.add(addButton);
-        buttons.add(detailButton);
+        buttons.add(allSubjects);
         buttons.add(subjectButton);
 
         return buttons;
@@ -170,40 +193,60 @@ public class Review extends Window {
 
     private Object[][] getTasks(int byWhat, ArrayList<Task> tasks) {
         if (byWhat == 1) {
-            tasks.sort(Comparator.comparing(task -> task.getSubject().getName()));
+            ArrayList<Task> helper = new ArrayList<>();
 
-            Object[][] data = new Object[tasks.size()][5];
+            for (Task value : tasks) {
+                if (!value.isDone()) {
+                    helper.add(value);
+                }
+            }
+            helper.sort(Comparator.comparing(e -> e.getSubject().getName()));
+
+            Object[][] data = new Object[helper.size()][5];
             int i = 0;
 
-            for (Task task : tasks) {
-                String taskName = task.getName();
-                String taskSubject = task.getSubject().getName();
-                int taskPriority = task.getPriority();
-                String taskDate = task.getUIDate();
-                String taskDone = task.isDone() ? "Yes" : "No";
+            for (Task task : helper) {
+                if (!task.isDone()) {
+                    String taskName = task.getName();
+                    String taskSubject = task.getSubject().getName();
+                    int taskPriority = task.getPriority();
+                    String taskDate = task.getUIDate();
 
-                Object[] row = {taskName, taskSubject, taskPriority, taskDate, taskDone};
-                data[i] = row;
-                i++;
+                    Object[] row = {taskName, taskSubject, taskPriority, taskDate, "Not done"};
+                    data[i] = row;
+                    i++;
+                } else {
+                    i++;
+                }
             }
 
             return data;
         } else if (byWhat == 2) {
-            tasks.sort(Comparator.comparing(task -> task.getPriority()));
+            ArrayList<Task> helper = new ArrayList<>();
+            for (Task value : tasks) {
+                if (!value.isDone()) {
+                    helper.add(value);
+                }
+            }
 
-            Object[][] data = new Object[tasks.size()][5];
+            helper.sort(Comparator.comparing(e -> e.getPriority()));
+
+            Object[][] data = new Object[helper.size()][5];
             int i = 0;
 
-            for (Task task : tasks) {
-                String taskName = task.getName();
-                String taskSubject = task.getSubject().getName();
-                int taskPriority = task.getPriority();
-                String taskDate = task.getUIDate();
-                String taskDone = task.isDone() ? "Yes" : "No";
+            for (Task task : helper) {
+                if (!task.isDone()) {
+                    String taskName = task.getName();
+                    String taskSubject = task.getSubject().getName();
+                    int taskPriority = task.getPriority();
+                    String taskDate = task.getUIDate();
 
-                Object[] row = {taskName, taskSubject, taskPriority, taskDate, taskDone};
-                data[i] = row;
-                i++;
+                    Object[] row = {taskName, taskSubject, taskPriority, taskDate, "Not done"};
+                    data[i] = row;
+                    i++;
+                } else {
+                    i++;
+                }
             }
 
             return data;
@@ -220,15 +263,18 @@ public class Review extends Window {
             int i = 0;
 
             for (Task task : sortedTasks) {
-                String taskName = task.getName();
-                String taskSubject = task.getSubject().getName();
-                int taskPriority = task.getPriority();
-                String taskDate = task.getUIDate();
-                String taskDone = task.isDone() ? "Yes" : "No";
+                if (!task.isDone()) {
+                    String taskName = task.getName();
+                    String taskSubject = task.getSubject().getName();
+                    int taskPriority = task.getPriority();
+                    String taskDate = task.getUIDate();
 
-                Object[] row = {taskName, taskSubject, taskPriority, taskDate, taskDone};
-                data[i] = row;
-                i++;
+                    Object[] row = {taskName, taskSubject, taskPriority, taskDate, "Not done"};
+                    data[i] = row;
+                    i++;
+                } else {
+                    i++;
+                }
             }
 
             return data;

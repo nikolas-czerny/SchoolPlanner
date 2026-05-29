@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class Grade {
     private String name;
     private int value;
-    private Subject subject;
-    private Task task;
+    private transient Subject subject; // transient - znamena ze nebude ukladat do gsonu
+    private transient Task task;
     private int day;
     private int month;
     private int year;

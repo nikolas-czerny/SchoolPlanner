@@ -6,6 +6,7 @@ import logic.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class addTask extends Window {
     private User user;
@@ -14,7 +15,7 @@ public class addTask extends Window {
     private JTextField yearField;
     private JTextField priorityField;
     private JTextField typeField;
-    private JTextField subjectField;
+    private popUp subjectField;
     private JTextField nameField;
     JLabel errorLabel;
 
@@ -107,11 +108,17 @@ public class addTask extends Window {
 
         priorityField = new JTextField();
         typeField = new JTextField();
-        subjectField = new JTextField();
+        subjectField = new popUp();
+
+        ArrayList<String> subs = new ArrayList<>();
+        for (Subject sub: user.getSubjects()) {
+            subs.add(sub.getName());
+        }
+        JToolBar toolBar = subjectField.run(subs);
 
         moreInfo.add(priorityField);
         moreInfo.add(typeField);
-        moreInfo.add(subjectField);
+        moreInfo.add(toolBar);
 
         return moreInfo;
     }
@@ -144,7 +151,7 @@ public class addTask extends Window {
             String year = yearField.getText();
             String priority = priorityField.getText();
             String type = typeField.getText();
-            String subject = subjectField.getText();
+            String subject = subjectField.getValue();
 
             if (name.length() < 5) {
                 System.out.println("Name is too short");
@@ -153,10 +160,8 @@ public class addTask extends Window {
                 return;
             }
 
-            if (subject.length() < 3) {
-                System.out.println("Subject is too short");
-                errorMessage = "Subject is too short";
-                updateErrorMessage();
+            if (subject.equals("Choose...")) {
+                errorMessage = "Choose a subject";
                 return;
             }
 
@@ -197,11 +202,7 @@ public class addTask extends Window {
                     return;
                 }
 
-                // TODO - udelat realny predmet
-
-                Subject subject1 = new Subject(subject);
-
-                user.makeTask(name, dayInt, monthInt, yearInt, false, priorityInt, subject1);
+                user.makeTask(name, dayInt, monthInt, yearInt, false, priorityInt, user.getSubjectByName(subject));
 
                 this.setVisible(false);
                 Review review = new Review(user);
@@ -225,5 +226,6 @@ public class addTask extends Window {
 
         return buttons;
     }
+
 
 }
