@@ -19,17 +19,21 @@ public class subjectAll extends Window {
     }
 
     public void buildUi() {
-        JPanel panel = new JPanel(new GridLayout(4, 1));
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
 
         JPanel header = headerPanel();
         JPanel table = tablePanel();
         JPanel buttons = buttonsPanel();
         JPanel addSubjects = addSubject();
 
-        panel.add(header);
-        panel.add(table);
-        panel.add(addSubjects);
-        panel.add(buttons);
+        panel.add(header, BorderLayout.NORTH);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
+        mainPanel.add(table, BorderLayout.CENTER);
+        panel.add(mainPanel, BorderLayout.CENTER);
+        mainPanel.add(addSubjects, BorderLayout.SOUTH);
+
+        panel.add(buttons, BorderLayout.SOUTH);
 
         add(panel);
     }
@@ -37,7 +41,10 @@ public class subjectAll extends Window {
     public JPanel headerPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        panel.add(new JLabel("Subjects"));
+        JLabel label = new JLabel("Subjects");
+        label.setFont(new Font("Arial", Font.BOLD, 24));
+        panel.add(label);
+
         return panel;
     }
 
@@ -140,7 +147,7 @@ public class subjectAll extends Window {
     }
 
     public JPanel addSubject() {
-        JPanel panel = new JPanel(new GridLayout(2, 1));
+        JPanel panel = new JPanel(new GridLayout(1, 2));
 
         JTextField nameField = new JTextField(1);
         JButton addButton = new JButton("Add");

@@ -9,11 +9,8 @@ import java.util.ArrayList;
 
 public class popUp {
     private String value;
-    public JToolBar run(ArrayList<String> options){
-        JToolBar toolBar = new JToolBar();
-        toolBar.add(createMoreButton(options));
-
-        return toolBar;
+    public JToggleButton run(ArrayList<String> options){
+        return createMoreButton(options);
     }
 
     public JToggleButton createMoreButton(ArrayList<String> options) {

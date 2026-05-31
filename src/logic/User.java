@@ -20,7 +20,11 @@ public class User {
     public ArrayList<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         for (Subject s : subjects) {
-            tasks.addAll(s.getTasks());
+            for (Task task : s.getTasks()) {
+                if (!task.isDone()) {
+                    tasks.add(task);
+                }
+            }
         }
         return tasks;
     }

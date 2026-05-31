@@ -38,17 +38,15 @@ public class detailSubject extends Window {
     }
 
     public void buildUI(){
-        JPanel mainPanel = new JPanel(new GridLayout(4, 1));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 
         JPanel headerPanel = createHeaderPanel();
         JPanel contentPanel = buildContentLayout();
         JPanel addgradePanel = createAddgradePanel();
-        JPanel infoLabelPanel = createInfoLabelPanel();
 
-        mainPanel.add(headerPanel);
-        mainPanel.add(contentPanel);
-        mainPanel.add(addgradePanel);
-        mainPanel.add(infoLabelPanel);
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(addgradePanel, BorderLayout.SOUTH);
 
         add(mainPanel);
     }
@@ -90,29 +88,29 @@ public class detailSubject extends Window {
 //    }
 
     public JPanel createTablePanel(){
-        JPanel tablePanel = new JPanel(new GridLayout(2, 1));
+        JPanel tablePanel = new JPanel(new BorderLayout(5, 5));
 
-        JLabel tableLabel = new JLabel("Not Done Tasks");
+        JLabel tableLabel = new JLabel("All Tasks");
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        tablePanel.add(tableLabel);
+        tablePanel.add(tableLabel, BorderLayout.NORTH);
 
         refreshTasksTable();
 
-        tablePanel.add(scrollOne);
+        tablePanel.add(scrollOne, BorderLayout.CENTER);
 
         return tablePanel;
     }
 
     public JPanel createGradesPanel(){
-        JPanel gradesPanel = new JPanel(new GridLayout(2, 1));
+        JPanel gradesPanel = new JPanel(new BorderLayout(5, 5));
 
-        JLabel tableLabel = new JLabel("Grades ");
+        JLabel tableLabel = new JLabel("Grades");
         tableLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        gradesPanel.add(tableLabel);
+        gradesPanel.add(tableLabel, BorderLayout.NORTH);
 
         refreshGradesTable();
 
-        gradesPanel.add(scrollTwo);
+        gradesPanel.add(scrollTwo, BorderLayout.CENTER);
 
         return gradesPanel;
     }
@@ -127,7 +125,9 @@ public class detailSubject extends Window {
         JPanel add_grade_inputs = new JPanel(new GridLayout(2, 1));
 
         JTextField gradeInput = new JTextField(1);
+        gradeInput.setText("Grade");
         JTextField descriptionInput = new JTextField(1);
+        descriptionInput.setText("Description");
         JButton addGradeButton = new JButton("Add Grade");
         addGradeButton.addActionListener(e -> {
             try {
@@ -173,11 +173,10 @@ public class detailSubject extends Window {
     }
 
     public void refreshInfoLabel(boolean positive) {
-        info.setText(infoText);
         if (positive) {
-            info.setForeground(Color.GREEN);
+            JOptionPane.showMessageDialog(null, infoText, "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            info.setForeground(Color.RED);
+            JOptionPane.showMessageDialog(null, infoText, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -215,8 +214,14 @@ public class detailSubject extends Window {
             String taskName = task.getName();
             int taskPriority = task.getPriority();
             String taskDate = task.getUIDate();
+            String isDone = "";
+            if (task.isDone()) {
+                isDone = "Yes";
+            } else {
+                isDone = "No";
+            }
 
-            Object[] row = {taskName, taskPriority, taskDate};
+            Object[] row = {taskName, taskPriority, taskDate, isDone};
             tasks[i] = row;
             i++;
         }
@@ -225,7 +230,7 @@ public class detailSubject extends Window {
     }
 
     public String[] GetHeaderTask(){
-        String[] header = {"Name", "Priority", "Date"};
+        String[] header = {"Name", "Priority", "Date", "Done"};
         return header;
     }
 
@@ -274,11 +279,11 @@ public class detailSubject extends Window {
     }
 
     public JPanel createButtonsPanel(){
-        JPanel buttonsPanel = new JPanel(new GridLayout(3, 1));
+        JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
 
         JButton button1 = new JButton("Review");
         JButton button2 = new JButton("Remove grade");
-        JButton button3 = new JButton("Set as done");
+        JButton button3 = new JButton("Subjects detail");
 
         button1.addActionListener(e -> {
             this.setVisible(false);

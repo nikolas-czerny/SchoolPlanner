@@ -51,7 +51,7 @@ public class Review extends Window {
     }
 
     private JPanel createFilterPanel() {
-        JPanel filters = new JPanel(new GridLayout(1, 3, 10, 10));
+        JPanel filters = new JPanel(new GridLayout(1, 3));
 
         JButton buttonSortBySubject = new JButton("By Subject");
         JButton buttonSortByPriority = new JButton("By Priority");
@@ -149,7 +149,7 @@ public class Review extends Window {
     }
 
     private JPanel createButtonPanel() {
-        JPanel buttons = new JPanel(new GridLayout(1, 3, 10, 10));
+        JPanel buttons = new JPanel(new GridLayout(1, 3));
 
         JButton addButton = new JButton("Add task");
         JButton allSubjects = new JButton("List subjects");

@@ -3,9 +3,9 @@ package ui;
 import logic.User;
 
 public class runner {
-    User user = new User();
-    public runner(User user) {
-        this.user = user;
+    private User user;
+    public runner() {
+        this.user = new User();
     }
 
    public void run() {

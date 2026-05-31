@@ -29,21 +29,42 @@ public class addTask extends Window {
     }
 
     public void buildUi(){
-        JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+//        JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+//
+//        JPanel headerPanel = createHeaderPanel();
+//        JPanel inputPanel = createInputPanel();
+//        JPanel createDatePanel = createDatePanel();
+//        JPanel createMoreInfoPanel = createMoreInfoPanel();
+//        JPanel buttonPanel = createButtonPanel();
+//        JPanel errorMessage = createErrorMessage();
+//
+//        mainPanel.add(headerPanel);
+//        mainPanel.add(inputPanel);
+//        mainPanel.add(createDatePanel);
+//        mainPanel.add(createMoreInfoPanel);
+//        mainPanel.add(buttonPanel);
+//        mainPanel.add(errorMessage);
+//
+//        add(mainPanel);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 
         JPanel headerPanel = createHeaderPanel();
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+
         JPanel inputPanel = createInputPanel();
         JPanel createDatePanel = createDatePanel();
         JPanel createMoreInfoPanel = createMoreInfoPanel();
-        JPanel buttonPanel = createButtonPanel();
-        JPanel errorMessage = createErrorMessage();
+        JPanel inputMain = new JPanel(new GridLayout(3, 1));
+        inputMain.add(inputPanel);
+        inputMain.add(createDatePanel);
+        inputMain.add(createMoreInfoPanel);
 
-        mainPanel.add(headerPanel);
-        mainPanel.add(inputPanel);
-        mainPanel.add(createDatePanel);
-        mainPanel.add(createMoreInfoPanel);
-        mainPanel.add(buttonPanel);
-        mainPanel.add(errorMessage);
+        mainPanel.add(inputMain, BorderLayout.CENTER);
+
+        JPanel buttonPanel = createButtonPanel();
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
 
         add(mainPanel);
     }
@@ -94,7 +115,7 @@ public class addTask extends Window {
     }
 
     public JPanel createMoreInfoPanel(){
-        JPanel moreInfo = new JPanel(new GridLayout(2, 3, 10, 10));
+        JPanel moreInfo = new JPanel(new GridLayout(2, 3, 5, 5));
 
         JLabel priority = new JLabel("Priority (1 small - 5 big)");
         priority.setFont(new Font("Arial", Font.BOLD, 15));
@@ -114,7 +135,7 @@ public class addTask extends Window {
         for (Subject sub: user.getSubjects()) {
             subs.add(sub.getName());
         }
-        JToolBar toolBar = subjectField.run(subs);
+        JToggleButton toolBar = subjectField.run(subs);
 
         moreInfo.add(priorityField);
         moreInfo.add(typeField);
@@ -123,19 +144,8 @@ public class addTask extends Window {
         return moreInfo;
     }
 
-    public JPanel createErrorMessage(){
-        JPanel errorMessagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        errorLabel = new JLabel(errorMessage);
-        errorLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        errorLabel.setForeground(Color.RED);
-        errorMessagePanel.add(errorLabel);
-
-        return errorMessagePanel;
-    }
-
     public void updateErrorMessage(){
-        errorLabel.setText(errorMessage);
+        JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public JPanel createButtonPanel(){
@@ -160,8 +170,9 @@ public class addTask extends Window {
                 return;
             }
 
-            if (subject.equals("Choose...")) {
+            if (subject == null) {
                 errorMessage = "Choose a subject";
+                updateErrorMessage();
                 return;
             }
 

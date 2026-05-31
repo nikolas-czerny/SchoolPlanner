@@ -33,21 +33,25 @@ public class detailTask extends Window {
     }
 
     public void buildUI() {
-        JPanel mainPanel = new JPanel(new GridLayout(6, 1));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 
+        JPanel headMain = new JPanel(new GridLayout(2, 1));
         JPanel headerPanel = createHeaderPanel();
         JPanel descriptionPanel = createDescriptionPanel();
-        createInfoPanel();
-        JPanel buttonsPanel = createButtonPanel();
-        JPanel InfoLabelPanel = createInfoLabelPanel();
-        refreshGradePanel();
+        headMain.add(headerPanel);
+        headMain.add(descriptionPanel);
 
-        mainPanel.add(headerPanel);
-        mainPanel.add(descriptionPanel);
-        mainPanel.add(infoPanel);
-        mainPanel.add(buttonsPanel);
-        mainPanel.add(InfoLabelPanel);
-        mainPanel.add(gradePanel);
+        JPanel mainContent = new JPanel(new BorderLayout(5, 5));
+        createInfoPanel();
+        refreshGradePanel();
+        mainContent.add(infoPanel, BorderLayout.NORTH);
+        mainContent.add(gradePanel, BorderLayout.SOUTH);
+
+        JPanel buttonPanel = createButtonPanel();
+
+        mainPanel.add(headMain, BorderLayout.NORTH);
+        mainPanel.add(mainContent, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
     }
@@ -259,20 +263,11 @@ public class detailTask extends Window {
         }
     }
 
-    public JPanel createInfoLabelPanel() {
-        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        info = new JLabel(infoText);
-
-        infoPanel.add(info);
-        return infoPanel;
-    }
-
     public void refreshInfoLabel(boolean positive) {
-        info.setText(infoText);
         if (positive) {
-            info.setForeground(Color.GREEN);
+            JOptionPane.showMessageDialog(null, infoText, "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            info.setForeground(Color.RED);
+            JOptionPane.showMessageDialog(null, infoText, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
