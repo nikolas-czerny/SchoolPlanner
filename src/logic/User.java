@@ -77,11 +77,9 @@ public class User {
             }
 
             System.out.println("Data loaded");
-
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error loading data");
+            this.subjects = new ArrayList<>();
         }
     }
 
